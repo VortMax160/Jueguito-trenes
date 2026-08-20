@@ -29,6 +29,12 @@ public class RailwaySignal
         IsManual = true;
         State = State == SignalState.Green ? SignalState.Red : SignalState.Green;
     }
+
+    public void Reset()
+    {
+        State = SignalState.Green;
+        IsManual = false;
+    }
 }
 
 public class Station
@@ -59,5 +65,12 @@ public class Station
                 WaitingPassengers += new Random().Next(1, 4);
             }
         }
+    }
+
+    public void Reset()
+    {
+        WaitingPassengers = 10;
+        TotalPassengersDisembarked = 0;
+        PassengerSpawnTimer = 0;
     }
 }

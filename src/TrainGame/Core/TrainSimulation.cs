@@ -57,6 +57,19 @@ public class TrainSimulation
         return train;
     }
 
+    public void ResetTransientState()
+    {
+        foreach (var station in Stations)
+        {
+            station.Reset();
+        }
+
+        foreach (var signal in Signals)
+        {
+            signal.Reset();
+        }
+    }
+
     public void RemoveTrain(Train train)
     {
         Trains.Remove(train);

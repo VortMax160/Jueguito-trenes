@@ -49,6 +49,7 @@ public class Train
     public int Id { get; }
     public string Name { get; set; }
     public string ColorHex { get; set; }
+    public int? TargetStationId { get; set; }
 
     // Posición en la grilla y movimiento
     public int CellX { get; set; }

@@ -48,6 +48,7 @@ public class PuzzleManager
     public void LoadLevel(int index)
     {
         if (index < 0 || index >= Levels.Count) return;
+        if (!Scores[Levels[index].Id].IsUnlocked) return;
 
         CurrentLevelIndex = index;
         State = PuzzleState.Planning;
@@ -100,6 +101,7 @@ public class PuzzleManager
             var train = Simulation.SpawnTrain(sp.X, sp.Y, sp.Direction, sp.Name, sp.CarriageCount, sp.ColorHex);
             if (train != null)
             {
+                train.TargetStationId = sp.TargetStationId;
                 train.Speed = 0;
                 train.TargetSpeed = 0;
                 train.ProgressInCell = 0.5;
@@ -110,6 +112,20 @@ public class PuzzleManager
     public void StartSimulation()
     {
         if (State != PuzzleState.Planning && State != PuzzleState.Defeat) return;
+
+        if (State == PuzzleState.Defeat)
+        {
+            ResetToPlanning();
+        }
+
+        UpdateTrackCount();
+        if (PlayerTracksPlacedCount > CurrentLevel.MaxTrackBudget)
+        {
+            StatusMessage = $"Presupuesto excedido: máximo {CurrentLevel.MaxTrackBudget} vías.";
+            Simulation.IsPaused = true;
+            OnPuzzleStateChanged?.Invoke();
+            return;
+        }
 
         State = PuzzleState.Running;
         StatusMessage = "¡Trenes en marcha! Esperando que alcancen sus estaciones...";
@@ -138,6 +154,8 @@ public class PuzzleManager
             st.HasReached = false;
         }
 
+        Simulation.ResetTransientState();
+
         // Reposicionar trenes en sus salidas
         SpawnPlanningTrains();
         UpdateTrackCount();
@@ -164,18 +182,16 @@ public class PuzzleManager
             }
 
             // Comprobar si llegó a su estación objetivo
-            var sp = lvl.TrainSpawns.FirstOrDefault(s => s.Name == train.Name || s.ColorHex == train.ColorHex);
-            if (sp != null)
+            var targetSt = train.TargetStationId.HasValue
+                ? lvl.TargetStations.FirstOrDefault(st => st.Id == train.TargetStationId.Value)
+                : null;
+            if (targetSt != null)
             {
-                var targetSt = lvl.TargetStations.FirstOrDefault(st => st.Id == sp.TargetStationId);
-                if (targetSt != null)
+                if (train.CellX == targetSt.X && train.CellY == targetSt.Y && Math.Abs(train.ProgressInCell - 0.5) < 0.25)
                 {
-                    if (train.CellX == targetSt.X && train.CellY == targetSt.Y && Math.Abs(train.ProgressInCell - 0.5) < 0.25)
-                    {
-                        targetSt.HasReached = true;
-                        train.Speed = 0;
-                        train.TargetSpeed = 0;
-                    }
+                    targetSt.HasReached = true;
+                    train.Speed = 0;
+                    train.TargetSpeed = 0;
                 }
             }
         }
@@ -236,6 +252,79 @@ public class PuzzleManager
     public void UpdateTrackCount()
     {
         PlayerTracksPlacedCount = CountPlayerTracks();
+    }
+
+    public bool TryPlaceTrack(int x, int y, TrackType type)
+    {
+        if (!CanEditCell(x, y)) return false;
+
+        var existing = Simulation.Grid.GetTrack(x, y);
+        if (existing?.Station != null || existing?.Signal != null) return false;
+        if (existing == null && CountPlayerTracks() >= CurrentLevel.MaxTrackBudget) return false;
+
+        Simulation.Grid.SetTrack(x, y, type);
+        UpdateTrackCount();
+        return true;
+    }
+
+    public bool TrySmartPlaceTrack(int x, int y)
+    {
+        if (!CanEditCell(x, y)) return false;
+
+        var existing = Simulation.Grid.GetTrack(x, y);
+        if (existing?.Station != null || existing?.Signal != null) return false;
+        if (existing == null && CountPlayerTracks() >= CurrentLevel.MaxTrackBudget) return false;
+
+        Simulation.Grid.SmartPlaceTrack(x, y);
+        UpdateTrackCount();
+        return true;
+    }
+
+    public bool TryAddStation(int x, int y, string name, bool isHorizontal)
+    {
+        if (!CanEditCell(x, y) || Simulation.Grid.HasTrack(x, y)) return false;
+        if (CountPlayerTracks() >= CurrentLevel.MaxTrackBudget) return false;
+
+        Simulation.AddStation(x, y, name, isHorizontal);
+        UpdateTrackCount();
+        return true;
+    }
+
+    public bool TryRemoveTrack(int x, int y)
+    {
+        if (!CanEditCell(x, y)) return false;
+
+        var track = Simulation.Grid.GetTrack(x, y);
+        if (track == null || track.Station != null) return false;
+
+        if (track.Signal != null)
+        {
+            Simulation.Signals.Remove(track.Signal);
+        }
+
+        bool removed = Simulation.Grid.RemoveTrack(x, y);
+        if (removed) UpdateTrackCount();
+        return removed;
+    }
+
+    public bool TryAddSignal(int x, int y, Direction direction)
+    {
+        var track = Simulation.Grid.GetTrack(x, y);
+        if (track == null || track.Signal != null) return false;
+
+        Simulation.AddSignal(x, y, direction);
+        return true;
+    }
+
+    private bool CanEditCell(int x, int y)
+    {
+        if (!Simulation.Grid.IsInBounds(x, y)) return false;
+
+        var level = CurrentLevel;
+        return !level.Obstacles.Any(o => o.X == x && o.Y == y)
+            && !level.TargetStations.Any(st => st.X == x && st.Y == y)
+            && !level.FixedTracks.Any(ft => ft.X == x && ft.Y == y)
+            && !level.TrainSpawns.Any(sp => sp.X == x && sp.Y == y);
     }
 
     public void NextLevel()
