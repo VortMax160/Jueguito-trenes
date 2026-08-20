@@ -75,16 +75,16 @@ public static class LevelLibrary
 
     private static PuzzleLevel CreateLevel3()
     {
-        // Nivel 3: Esquivar obstáculos de rocas (distancia mínima: ~12 vías)
+        // Nivel 3: Esquivar obstáculos de rocas (distancia mínima: 13 vías)
         return new PuzzleLevel
         {
             Id = 3,
             Title = "Nivel 3: El Paso de las Rocas",
             Description = "Una cordillera de rocas bloquea el camino directo.",
             Hint = "Desvía la vía hacia el norte o sur alrededor de las rocas y vuelve a alinearte con la estación.",
-            Star3Budget = 12,
-            Star2Budget = 15,
-            MaxTrackBudget = 18,
+            Star3Budget = 13,
+            Star2Budget = 16,
+            MaxTrackBudget = 20,
             TrainSpawns = new List<TrainSpawn>
             {
                 new() { X = 3, Y = 7, Direction = Direction.East, ColorHex = "#10B981", Name = "Carguero Esmeralda", TargetStationId = 1, CarriageCount = 2 }
@@ -166,16 +166,16 @@ public static class LevelLibrary
 
     private static PuzzleLevel CreateLevel6()
     {
-        // Nivel 6: Tres trenes, laberinto de montañas (~26 vías mínimas)
+        // Nivel 6: Tres trenes, laberinto de montañas (37 vías mínimas)
         return new PuzzleLevel
         {
             Id = 6,
             Title = "Nivel 6: Desafío Ferroviario Total",
             Description = "3 trenes (Rojo, Azul, Verde) deben llegar a sus terminales esquivando obstáculos.",
             Hint = "Optimiza cada curva para ahorrar piezas de vía.",
-            Star3Budget = 26,
-            Star2Budget = 30,
-            MaxTrackBudget = 36,
+            Star3Budget = 37,
+            Star2Budget = 40,
+            MaxTrackBudget = 43,
             TrainSpawns = new List<TrainSpawn>
             {
                 new() { X = 2, Y = 3, Direction = Direction.East, ColorHex = "#EF4444", Name = "Tren Rojo", TargetStationId = 1, CarriageCount = 1 },

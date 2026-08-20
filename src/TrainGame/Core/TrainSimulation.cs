@@ -57,6 +57,19 @@ public class TrainSimulation
         return train;
     }
 
+    public void ResetTransientState()
+    {
+        foreach (var station in Stations)
+        {
+            station.Reset();
+        }
+
+        foreach (var signal in Signals)
+        {
+            signal.Reset();
+        }
+    }
+
     public void RemoveTrain(Train train)
     {
         Trains.Remove(train);
@@ -322,6 +335,7 @@ public class TrainSimulation
 
             train.CellX = nextX;
             train.CellY = nextY;
+            train.EntryTravelDirection = train.TravelDirection;
             train.TravelDirection = nextExitDir.Value;
             train.ProgressInCell -= 1.0;
             currentTrack = nextTrack;
@@ -333,7 +347,7 @@ public class TrainSimulation
                 train.CellX,
                 train.CellY,
                 currentTrack.EffectiveType,
-                train.TravelDirection,
+                train.EntryTravelDirection,
                 train.ProgressInCell);
 
             train.SetWorldTransform(wx, wy, angle);

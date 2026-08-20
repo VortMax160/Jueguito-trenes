@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -87,6 +88,7 @@ public partial class MainWindow : Window
             BtnRunPuzzle.Background = new SolidColorBrush(Color.FromRgb(22, 163, 74));
         }
 
+        UpdateSimulationControls();
         RebuildLevelButtons();
     }
 
@@ -207,6 +209,38 @@ public partial class MainWindow : Window
     private void BtnResetPuzzle_Click(object sender, RoutedEventArgs e)
     {
         Puzzle?.ResetToPlanning();
+    }
+
+    private void BtnPauseSimulation_Click(object sender, RoutedEventArgs e)
+    {
+        if (Puzzle?.State != PuzzleState.Running) return;
+
+        CanvasGame.Simulation.IsPaused = !CanvasGame.Simulation.IsPaused;
+        TxtPuzzleStatusMsg.Text = CanvasGame.Simulation.IsPaused
+            ? "Simulación pausada. El trazado permanece intacto."
+            : "¡Trenes en marcha!";
+        UpdateSimulationControls();
+    }
+
+    private void BtnSpeed_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || button.Tag is not string tag ||
+            !double.TryParse(tag, NumberStyles.Float, CultureInfo.InvariantCulture, out double scale))
+        {
+            return;
+        }
+
+        CanvasGame.Simulation.TimeScale = scale;
+        TxtFooterStatus.Text = $"Velocidad de simulación: {scale.ToString("0.0", CultureInfo.InvariantCulture)}x";
+    }
+
+    private void UpdateSimulationControls()
+    {
+        if (Puzzle == null || BtnPauseSimulation == null) return;
+
+        bool isRunning = Puzzle.State == PuzzleState.Running;
+        BtnPauseSimulation.IsEnabled = isRunning;
+        BtnPauseSimulation.Content = CanvasGame.Simulation.IsPaused ? "▶ Continuar" : "⏸ Pausar";
     }
 
     private void BtnPrevLevel_Click(object sender, RoutedEventArgs e)

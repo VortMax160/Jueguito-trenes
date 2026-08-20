@@ -186,7 +186,7 @@ public class GameCanvas : FrameworkElement
                     if (clickedTrack.Signal == null)
                     {
                         var (d1, _) = clickedTrack.GetConnectedPair();
-                        Simulation.AddSignal(cx, cy, d1);
+                        PuzzleManager?.TryAddSignal(cx, cy, d1);
                     }
                     else
                     {
@@ -312,37 +312,37 @@ public class GameCanvas : FrameworkElement
         switch (CurrentTool)
         {
             case ToolMode.AutoTrack:
-                Simulation.Grid.SmartPlaceTrack(x, y);
+                PuzzleManager?.TrySmartPlaceTrack(x, y);
                 break;
             case ToolMode.StraightH:
-                Simulation.Grid.SetTrack(x, y, TrackType.Horizontal);
+                PuzzleManager?.TryPlaceTrack(x, y, TrackType.Horizontal);
                 break;
             case ToolMode.StraightV:
-                Simulation.Grid.SetTrack(x, y, TrackType.Vertical);
+                PuzzleManager?.TryPlaceTrack(x, y, TrackType.Vertical);
                 break;
             case ToolMode.CurveNE:
-                Simulation.Grid.SetTrack(x, y, TrackType.CurveNorthEast);
+                PuzzleManager?.TryPlaceTrack(x, y, TrackType.CurveNorthEast);
                 break;
             case ToolMode.CurveES:
-                Simulation.Grid.SetTrack(x, y, TrackType.CurveEastSouth);
+                PuzzleManager?.TryPlaceTrack(x, y, TrackType.CurveEastSouth);
                 break;
             case ToolMode.CurveSW:
-                Simulation.Grid.SetTrack(x, y, TrackType.CurveSouthWest);
+                PuzzleManager?.TryPlaceTrack(x, y, TrackType.CurveSouthWest);
                 break;
             case ToolMode.CurveWN:
-                Simulation.Grid.SetTrack(x, y, TrackType.CurveWestNorth);
+                PuzzleManager?.TryPlaceTrack(x, y, TrackType.CurveWestNorth);
                 break;
             case ToolMode.Cross:
-                Simulation.Grid.SetTrack(x, y, TrackType.Cross);
+                PuzzleManager?.TryPlaceTrack(x, y, TrackType.Cross);
                 break;
             case ToolMode.StationH:
-                Simulation.AddStation(x, y, $"Estación #{Simulation.Stations.Count + 1}", true);
+                PuzzleManager?.TryAddStation(x, y, $"Estación #{Simulation.Stations.Count + 1}", true);
                 break;
             case ToolMode.StationV:
-                Simulation.AddStation(x, y, $"Terminal #{Simulation.Stations.Count + 1}", false);
+                PuzzleManager?.TryAddStation(x, y, $"Terminal #{Simulation.Stations.Count + 1}", false);
                 break;
             case ToolMode.Signal:
-                Simulation.AddSignal(x, y, Direction.East);
+                PuzzleManager?.TryAddSignal(x, y, Direction.East);
                 break;
         }
 
@@ -353,15 +353,8 @@ public class GameCanvas : FrameworkElement
 
     private void ApplyDelete(int x, int y)
     {
-        // No permitir borrar estaciones fijas del puzzle
-        if (PuzzleManager?.CurrentLevel.TargetStations.Any(st => st.X == x && st.Y == y) == true)
+        if (PuzzleManager?.TryRemoveTrack(x, y) == true)
         {
-            return;
-        }
-
-        if (Simulation.Grid.RemoveTrack(x, y))
-        {
-            PuzzleManager?.UpdateTrackCount();
             OnMapStatsChanged?.Invoke();
             InvalidateVisual();
         }
