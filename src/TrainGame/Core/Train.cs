@@ -55,6 +55,7 @@ public class Train
     public int CellX { get; set; }
     public int CellY { get; set; }
     public Direction TravelDirection { get; set; }
+    public Direction EntryTravelDirection { get; set; }
     public double ProgressInCell { get; set; } // [0..1]
 
     // Coordenadas calculadas y renderizado
@@ -112,6 +113,7 @@ public class Train
         CellX = startX;
         CellY = startY;
         TravelDirection = startDir;
+        EntryTravelDirection = startDir;
         ColorHex = colorHex;
         ProgressInCell = 0.5;
     }

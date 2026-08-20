@@ -167,6 +167,7 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Right">
                     <Button x:Name="BtnRunPuzzle" Content="▶️ ¡ARRANCAR TRENES!" Style="{StaticResource BigPlayBtnStyle}" Click="BtnRunPuzzle_Click" ToolTip="Pon a prueba tu trazado de vías"/>
                     <Button x:Name="BtnResetPuzzle" Content="🔄 Ajustar Vías" Style="{StaticResource ActionBtnStyle}" Click="BtnResetPuzzle_Click" ToolTip="Regresa los trenes al inicio para ajustar las vías"/>
+                    <Button x:Name="BtnPauseSimulation" Content="⏸ Pausar" Style="{StaticResource ActionBtnStyle}" Click="BtnPauseSimulation_Click" IsEnabled="False" ToolTip="Pausa sin perder el trazado"/>
 
                     <Rectangle Width="1" Height="24" Fill="#475569" Margin="10,0"/>
 
@@ -197,10 +198,10 @@
                         <Separator Background="#334155" Margin="0,8"/>
                         <TextBlock Text="CURVAS Y CRUCES" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" Margin="4,0,0,6"/>
 
-                        <RadioButton Content="⮡ Curva Norte-Este" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="CurveNE"/>
-                        <RadioButton Content="⮣ Curva Este-Sur" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="CurveES"/>
-                        <RadioButton Content="⮠ Curva Sur-Oeste" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="CurveSW"/>
-                        <RadioButton Content="⮢ Curva Oeste-Norte" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="CurveWN"/>
+                        <RadioButton Content="└ Curva Norte-Este" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="CurveNE"/>
+                        <RadioButton Content="┌ Curva Este-Sur" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="CurveES"/>
+                        <RadioButton Content="┐ Curva Sur-Oeste" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="CurveSW"/>
+                        <RadioButton Content="┘ Curva Oeste-Norte" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="CurveWN"/>
                         <RadioButton Content="➕ Cruce en Cruz" Style="{StaticResource ToolButtonStyle}" Checked="Tool_Checked" Tag="Cross"/>
 
                         <Separator Background="#334155" Margin="0,8"/>
@@ -267,6 +268,15 @@
                         <Border Background="#0F172A" CornerRadius="8" Padding="12" Margin="0,0,0,16">
                             <StackPanel>
                                 <TextBlock x:Name="TxtPuzzleStatusMsg" Text="Planificando vías..." Foreground="#38BDF8" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Text="VELOCIDAD DE SIMULACIÓN" FontSize="12" FontWeight="Bold" Foreground="#94A3B8" Margin="0,0,0,8"/>
+                        <Border Background="#0F172A" CornerRadius="8" Padding="8" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button x:Name="BtnSpeedHalf" Content="0.5x" Tag="0.5" Style="{StaticResource ActionBtnStyle}" Click="BtnSpeed_Click" Padding="12,7"/>
+                                <Button x:Name="BtnSpeedNormal" Content="1x" Tag="1" Style="{StaticResource ActionBtnStyle}" Click="BtnSpeed_Click" Padding="12,7"/>
+                                <Button x:Name="BtnSpeedDouble" Content="2x" Tag="2" Style="{StaticResource ActionBtnStyle}" Click="BtnSpeed_Click" Padding="12,7"/>
                             </StackPanel>
                         </Border>
 

@@ -49,7 +49,7 @@ dotnet build
 # Ejecutar la aplicación WPF
 dotnet run --project src/TrainGame
 
-# Ejecutar las 15 pruebas unitarias
+# Ejecutar las pruebas unitarias
 dotnet test
 ```
 

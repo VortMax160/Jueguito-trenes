@@ -1,4 +1,4 @@
-# 🚂 TrenSim 2D — Juego de Puzles Ferroviarios (Railbound Style)
+# 🚂 TrenSim 2D/2.5D — Juego de Puzles Ferroviarios (Railbound Style)
 
 > Un juego de **puzles y lógica ferroviaria por niveles** para PC de escritorio desarrollado con **C#**, **.NET 9** y **WPF (Windows Presentation Foundation)**. Planifica el trazado de vías con presupuesto limitado, esquiva obstáculos, haz coincidir cada tren con su estación del mismo color y pulsa **¡ARRANCAR TRENES!** para comprobar tu solución.
 
@@ -20,18 +20,18 @@
 | Nivel | Nombre | Desafío / Mecánica | Presupuesto ⭐⭐⭐ |
 |---|---|---|---|
 | **1** | *Primeros Raíles* | Tutorial: Conexión recta con árboles en el terreno | ≤ 4 vías |
-| **2** | *La Gran Curva* | Giro de 90° para conectar salida Este con estación Sur | ≤ 6 vías |
-| **3** | *El Paso de las Rocas* | Cordillera rocosa en el medio que obliga a trazar una curva en 'S' | ≤ 9 vías |
-| **4** | *Rutas Paralelas (Colores)* | 2 trenes simultáneos (Rojo y Azul) a sus respectivas terminales | ≤ 10 vías |
-| **5** | *El Cruce en Cruz* | Dos trenes en trayectorias perpendiculares usando el cruce en cruz (+) | ≤ 12 vías |
-| **6** | *Desafío Ferroviario Total* | 3 trenes y 3 estaciones con laberinto de obstáculos | ≤ 16 vías |
+| **2** | *La Gran Curva* | Giro de 90° para conectar salida Este con estación Sur | ≤ 8 vías |
+| **3** | *El Paso de las Rocas* | Cordillera rocosa que obliga a rodear por el norte o sur | ≤ 13 vías |
+| **4** | *Rutas Paralelas (Colores)* | 2 trenes simultáneos (Rojo y Azul) a sus respectivas terminales | ≤ 14 vías |
+| **5** | *El Cruce en Cruz* | Dos trenes en trayectorias perpendiculares usando el cruce en cruz (+) | ≤ 15 vías |
+| **6** | *Desafío Ferroviario Total* | 3 trenes y 3 estaciones con laberinto de obstáculos | ≤ 37 vías |
 
 ---
 
 ## 📸 Características del Motor
 
 - **Auto-Vía Inteligente:** Al arrastrar el mouse, resuelve empalmes conectando rectas y curvas automáticamente.
-- **Renderizado Vectorial a 60 FPS:** Vías con balasto, durmientes, rieles de acero, obstáculos naturales (árboles y rocas) y rótulos de estaciones iluminados.
+- **Renderizado Vectorial a 60 FPS:** Ambientación por capas, sombras de profundidad 2.5D, vías con balasto, durmientes, rieles de acero, obstáculos naturales (árboles y rocas) y rótulos de estaciones iluminados.
 - **Sistema de Puntuación y Estrellas:** Registro de mejor puntuación de vías por nivel y desbloqueo progresivo.
 - **Navegación Fluida:** Zoom centrado en el cursor con la rueda del mouse y paneo con el botón central o `Espacio + Arrastre`.
 
@@ -57,8 +57,8 @@ TrainGame/
 │       │   ├── RailGrid.cs           # Grilla 2D y colocación inteligente
 │       │   ├── Train.cs              # Locomotoras, vagones y seguimiento de trayectoria
 │       │   └── TrainSimulation.cs    # Game loop, radares y cinemática
-│       ├── Rendering/                # Motor Gráfico
-│       │   ├── GameRenderer.cs       # Renderizado de vías, obstáculos, estaciones objetivo y trenes
+│       ├── Rendering/                # Motor Gráfico 2D/2.5D
+│       │   ├── GameRenderer.cs       # Mundo, profundidad, vías, obstáculos, estaciones y trenes
 │       │   └── ParticleSystem.cs     # Vapor y humo
 │       ├── UI/                       # Vista WPF
 │       │   └── GameCanvas.cs         # Canvas interactivo con soporte para modo puzle
@@ -66,8 +66,8 @@ TrainGame/
 │       └── MainWindow.xaml / .cs     # Selector de niveles, presupuesto, botón de arranque y modales
 └── tests/
     └── TrainGame.Tests/              # Pruebas Unitarias Automatizadas (xUnit)
-        ├── CoreTests.cs              # 12 pruebas de física y vías
-        └── PuzzleTests.cs            # 3 pruebas de niveles de puzle y condiciones de victoria
+        ├── CoreTests.cs              # Pruebas de física, geometría y vías
+        └── PuzzleTests.cs            # Pruebas de niveles, presupuesto y condiciones de victoria
 ```
 
 ---
@@ -81,7 +81,7 @@ dotnet build
 # Ejecutar el juego de puzles
 dotnet run --project src/TrainGame
 
-# Ejecutar las 15 pruebas unitarias
+# Ejecutar las pruebas unitarias
 dotnet test
 ```
 
@@ -95,5 +95,7 @@ dotnet test
 | **Borrar Vías** | Clic Derecho sobre cualquier vía |
 | **¡ARRANCAR TRENES!** | Botón verde superior `▶️ ¡ARRANCAR TRENES!` |
 | **Ajustar / Reintentar** | Botón `🔄 Ajustar Vías` |
+| **Pausar / Continuar** | Botón `⏸ Pausar` durante la simulación |
+| **Cambiar velocidad** | Botones `0.5x`, `1x` y `2x` |
 | **Zoom In / Out** | Rueda del mouse |
 | **Mover Cámara / Pan** | Botón Central o `Espacio + Arrastrar` |

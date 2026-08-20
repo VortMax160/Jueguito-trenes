@@ -57,6 +57,7 @@ public class PuzzleManager
         // Limpiar simulación
         Simulation.ClearAll();
         Simulation.IsPaused = true;
+        Simulation.TimeScale = 1.0;
 
         var lvl = CurrentLevel;
 
@@ -146,6 +147,7 @@ public class PuzzleManager
     {
         State = PuzzleState.Planning;
         Simulation.IsPaused = true;
+        Simulation.TimeScale = 1.0;
         StatusMessage = "Modo Planificación: Ajusta tus vías.";
 
         // Reiniciar estado de estaciones
